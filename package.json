@@ -1,0 +1,15 @@
+{
+  "name": "express-api",
+  "version": "1.0.0",
+  "description": "Basic Express API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1"
+  }
+}
