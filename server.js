@@ -134,7 +134,7 @@ const abi = [
       {
         "internalType": "address",
         "name": "account",
-      "type": "address"
+        "type": "address"
       }
     ],
     "name": "OwnableUnauthorizedAccount",
@@ -436,8 +436,8 @@ const abi = [
 
 app.get('/getCandy', async (req, res) => {
   try {
-    const provider = new ethers.ethers.providers.JsonRpcProvider(rpcUrl);
-    const contract = new ethers.ethers.Contract(contractAddress, abi, provider);
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
+    const contract = new ethers.Contract(contractAddress, abi, provider);
 
     // Example: Get the total supply of the token
     const totalSupply = await contract.totalSupply();
