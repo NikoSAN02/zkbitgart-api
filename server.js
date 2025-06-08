@@ -6,7 +6,7 @@ const port = 3000;
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Zk Canday Bitgart API!!!');
 });
 
 app.listen(port, () => {
