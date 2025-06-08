@@ -436,7 +436,7 @@ const abi = [
 
 app.get('/getCandy', async (req, res) => {
   try {
-    const provider = new ethers.JsonRpcProvider(rpcUrl);
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
     const contract = new ethers.Contract(contractAddress, abi, provider);
 
     // Example: Get the total supply of the token
