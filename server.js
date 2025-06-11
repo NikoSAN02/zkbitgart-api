@@ -13,7 +13,7 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-const contractAddress = process.env.CONTRACT_ADDRESS || "0xe3235322FFC36A8CA06F612D333167EaA67b5ae5";
+const contractAddress = process.env.CONTRACT_ADDRESS || "0x4A62198B40d6082dFDBf5bDfD247638E241ff0a4";
 const rpcUrl = process.env.RPC_URL || "https://rpc.zkcandy.io";
 const abi = [
     {
@@ -47,7 +47,7 @@ const abi = [
         {
           "internalType": "uint256",
           "name": "needed",
-          "type": "uint256"
+        "type": "uint256"
         }
       ],
       "name": "ERC20InsufficientAllowance",
@@ -483,19 +483,6 @@ const abi = [
       ],
       "stateMutability": "nonpayable",
       "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     }
   ];
 
@@ -515,20 +502,38 @@ app.get('/getCandy', async (req, res) => {
 });
 
 app.get('/get-last-transaction/:userAddress', async (req, res) => {
+  const { userAddress } = req.params;
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  let status = 0;
+  let adjustedTimestamp = 0;
+
   try {
-    const { userAddress } = req.params;
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+    let balance;
     try {
-      const latestBlock = await provider.getBlock('latest');
-      const currentTimestamp = latestBlock.timestamp * 1000;
-      const adjustedTimestamp = currentTimestamp - 300000; // Subtract 300 seconds (5 minutes)
-
-      res.json({ timestamp: adjustedTimestamp });
+      balance = await contract.functions.balanceOf(userAddress);
     } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ error: "Failed to retrieve transaction timestamp" });
+      console.error("Error getting balance:", error);
     }
+
+    if (balance && balance[0].gt(0)) {
+      status = 1;
+    }
+    //console.log("Balance:", balance.toString());
+
+    const latestBlock = await provider.getBlock('latest');
+    const currentTimestamp = latestBlock.timestamp;
+    adjustedTimestamp = currentTimestamp - 300; // Subtract 300 seconds (5 minutes)
+
+    const response = {
+      status: status,
+      data: {
+        timestamp: adjustedTimestamp * 1000,
+        tx: ""
+      }
+    };
+
+    res.json(response);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Failed to retrieve transaction timestamp" });
