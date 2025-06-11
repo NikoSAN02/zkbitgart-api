@@ -506,7 +506,7 @@ app.get('/get-last-transaction/:userAddress', async (req, res) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
   let status = 0;
   let adjustedTimestamp = 0;
-
+  let tx = ""
   try {
     const contract = new ethers.Contract(contractAddress, abi, provider);
     let balance;
@@ -517,7 +517,7 @@ app.get('/get-last-transaction/:userAddress', async (req, res) => {
     }
 
     if (balance && balance[0].gt(0)) {
-      status = 1;
+      tx = "0x0000000000000000000000000000000000000000000000000000000000000000";
     }
     //console.log("Balance:", balance.toString());
 
@@ -526,10 +526,10 @@ app.get('/get-last-transaction/:userAddress', async (req, res) => {
     adjustedTimestamp = currentTimestamp - 300; // Subtract 300 seconds (5 minutes)
 
     const response = {
-      status: status,
+      status: 0,
       data: {
         timestamp: adjustedTimestamp * 1000,
-        tx: ""
+        tx: tx
       }
     };
 
