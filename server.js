@@ -501,17 +501,25 @@ app.get('/getCandy', async (req, res) => {
   }
 });
 
-app.get('/get-last-transaction/:userAddress', async (req, res) => {
-  const { userAddress } = req.params;
+app.get('/get-last-transaction', async (req, res) => {
+  const { address } = req.query; // Changed from req.params to req.query
+  
+  // Add validation for the address parameter
+  if (!address) {
+    return res.status(400).json({ error: "Address parameter is required" });
+  }
+  
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
   let status = 0;
   let adjustedTimestamp = 0;
   let tx = ""
+  
   try {
     const contract = new ethers.Contract(contractAddress, abi, provider);
     let balance;
+    
     try {
-      balance = await contract.functions.balanceOf(userAddress);
+      balance = await contract.functions.balanceOf(address); // Use 'address' instead of 'userAddress'
     } catch (error) {
       console.error("Error getting balance:", error);
     }
